@@ -6,17 +6,6 @@ import (
 	"encoding/base64"
 )
 
-const (
-	// read conf or get it by other way, donot write in code
-	encryptKey string = "like: jaidoew923e2jdio&*(s9"
-)
-
-var encodeKey []byte
-
-func init() {
-	encodeKey = []byte(encryptKey)
-}
-
 func Base64EncodeByte(data []byte) []byte {
 	return []byte(base64.StdEncoding.EncodeToString(data))
 }
@@ -25,24 +14,24 @@ func Base64DecodeByte(data []byte) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(string(data))
 }
 
-func AESEncodeByte(data []byte) ([]byte, error) {
-	block, err := aes.NewCipher(encodeKey)
+func AESEncodeByte(data []byte, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return data, err
 	}
-	var iv = encodeKey[:aes.BlockSize]
+	var iv = key[:aes.BlockSize]
 	blockMode := cipher.NewCFBEncrypter(block, iv)
 	dest := make([]byte, len(string(data)))
 	blockMode.XORKeyStream(dest, data)
 	return dest, nil
 }
 
-func AESDecodeByte(data []byte) ([]byte, error) {
-	block, err := aes.NewCipher(encodeKey)
+func AESDecodeByte(data []byte, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return data, err
 	}
-	var iv = encodeKey[:aes.BlockSize]
+	var iv = key[:aes.BlockSize]
 	blockMode := cipher.NewCFBDecrypter(block, iv)
 	dest := make([]byte, len(string(data)))
 	blockMode.XORKeyStream(dest, data)
