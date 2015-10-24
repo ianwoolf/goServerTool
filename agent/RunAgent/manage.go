@@ -1,4 +1,4 @@
-package serverInit
+package manage
 
 import (
 	"fmt"
